@@ -1,0 +1,27 @@
+{
+  "name": "desafio-node1",
+  "version": "1.0.0",
+  "description": "Desafio um da formacao Node RocketSeat",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ossamumaeda/desafio-node1.git"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "ossamumaeda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ossamumaeda/desafio-node1/issues"
+  },
+  "homepage": "https://github.com/ossamumaeda/desafio-node1#readme",
+  "dependencies": {
+    "csv": "^6.3.9"
+  }
+}
