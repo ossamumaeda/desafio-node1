@@ -10,12 +10,13 @@ export const routes = [
         path: buildRoutePath("/task"),
         handler: async (req, res) => {
 
-            const { search } = req.query
-
-            const r = await dataBase.select('tasks',search?{
-                title:search,
-                description:search
-            }:null)
+            const query = req.query
+            console.log(req.query)
+            const search = {
+                ...(query.title && { title: query.title }),
+                ...(query.description && { description: query.description })
+            };
+            const r = await dataBase.select('tasks', search)
             return res
                 .setHeader('Content-type', 'application/json')
                 .end(JSON.stringify(r))
