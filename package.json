@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/ossamumaeda/desafio-node1#readme",
   "dependencies": {
-    "csv": "^6.3.9"
+    "csv": "^6.3.9",
+    "multiparty": "^4.2.3"
   }
 }

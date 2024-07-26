@@ -1,6 +1,7 @@
 import http from 'node:http'
 import { routes } from './routes/index.js';
 import {json} from '../src/middlewares/json.js';
+import {extractQueryParams} from '../src/utils/extract-query-params.js'
 const server = http.createServer(async (req,res) =>{
     const { method, url } = req
 

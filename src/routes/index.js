@@ -1,23 +1,21 @@
+import { createTask } from '../controllers/create-task.js';
 import { Database } from '../middlewares/dataBase.js';
 import { buildRoutePath } from '../utils/build-route-path.js'
-import {randomUUID} from 'node:crypto'
-import {parse} from 'csv-parse';
-
+import { randomUUID } from 'node:crypto'
 const dataBase = new Database();
 
 export const routes = [
     {
         method: "GET",
         path: buildRoutePath("/task"),
-        handler: (req, res) => {
+        handler: async (req, res) => {
 
-            const {search} = req.query
+            const { search } = req.query
 
-            // const r = dataBase.select('tasks', search ?{
-            //     name:search,
-            //     email:search
-            // }:null)
-            const r = dataBase.select('tasks')
+            const r = await dataBase.select('tasks',search?{
+                title:search,
+                description:search
+            }:null)
             return res
                 .setHeader('Content-type', 'application/json')
                 .end(JSON.stringify(r))
@@ -26,25 +24,30 @@ export const routes = [
     {
         method: "POST",
         path: buildRoutePath("/task"),
-        handler: (req, res) => {
+        handler: async (req, res) => {
             const {
                 title,
                 description,
-                completed_at,
-                created_at,
-                updated_at
             } = req.body
             console.log("POST")
 
             const task = {
-                id:randomUUID(),
+                id: randomUUID(),
                 title,
                 description,
-                completed_at,
-                created_at,
-                updated_at
+                completed_at: null,
+                created_at: new Date(),
+                updated_at: new Date()
             }
-            dataBase.insert('tasks', task);
+            await dataBase.insert('tasks', task);
+            return res.writeHead(201).end()
+        }
+    },
+    {
+        method: "POST",
+        path: buildRoutePath("/task/csv"),
+        handler: async (req, res) => {
+            await createTask(req)
             return res.writeHead(201).end()
         }
     },
@@ -64,7 +67,7 @@ export const routes = [
         path: buildRoutePath("/task/:id"),
         handler: (req, res) => {
             console.log("PUT")
-            const {id} = req.params
+            const { id } = req.params
             const {
                 title,
                 description,
@@ -73,7 +76,7 @@ export const routes = [
                 updated_at
             } = req.body
 
-            dataBase.update('tasks', id,{
+            dataBase.update('tasks', id, {
                 title,
                 description,
                 completed_at,
@@ -90,7 +93,7 @@ export const routes = [
         path: buildRoutePath("/task/:id"),
         handler: (req, res) => {
             console.log("PATCH")
-            const {id} = req.params
+            const { id } = req.params
 
             dataBase.patch('tasks', id)
             return res

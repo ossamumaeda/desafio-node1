@@ -13,14 +13,16 @@ export class Database{
         })
     }
 
-    #persist(){
+    async #persist(){
         const stringFy = JSON.stringify(this.#database)
-        fs.writeFile(dbPath,stringFy)
+        await fs.writeFile(dbPath,stringFy)
     }
 
-    select(table,search){
+    async select(table,search){
+        this.#database =  JSON.parse(await fs.readFile(dbPath,'utf-8'));
+        // console.log(this.#database)
         let data = this.#database[table] ?? []
-        // Object.entries(search) ---> [['name','Maeda'] , ['email', 'Maeda']]
+
         if(search){
             console.log(search)
             data = data.filter(row =>{
@@ -31,11 +33,15 @@ export class Database{
                 })
             })  
         }
+        // console.log(data)
+        // Object.entries(search) ---> [['name','Maeda'] , ['email', 'Maeda']]
+ 
 
         return data
     }
 
-    insert(table,data){
+    async insert(table,data){
+        this.#database =  JSON.parse(await fs.readFile(dbPath,'utf-8'));
         if(Array.isArray(this.#database[table])){ // Verifica se esta criado
             this.#database[table].push(data)
         }
@@ -43,8 +49,7 @@ export class Database{
             this.#database[table] = [data]
         }
 
-        this.#persist();
-
+        await this.#persist();
         return data;
     }
 
