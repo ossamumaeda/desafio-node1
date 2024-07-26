@@ -25,7 +25,6 @@ export class Database{
 
         if(search){
             data = data.filter(row =>{
-                console.log(Object.entries(search))
                 return Object.entries(search).some(([key,value]) =>{
                     return row[key]
                         .toLowerCase()
@@ -33,10 +32,6 @@ export class Database{
                 })
             })  
         }
-        // console.log(data)
-        // Object.entries(search) ---> [['name','Maeda'] , ['email', 'Maeda']]
- 
-
         return data
     }
 
@@ -48,7 +43,6 @@ export class Database{
         else{
             this.#database[table] = [data]
         }
-
         await this.#persist();
         return data;
     }
@@ -64,7 +58,7 @@ export class Database{
     update(table,id,data){
         const rowIndex = this.#database[table].findIndex(r => r.id === id)
         if(rowIndex > -1){
-            this.#database[table][rowIndex] = {id,...data}
+            this.#database[table][rowIndex] = {...this.#database[table][rowIndex],...data}
             this.#persist()
         }
     }
@@ -72,8 +66,7 @@ export class Database{
     patch(table,id){
         const rowIndex = this.#database[table].findIndex(r => r.id === id)
         if(rowIndex > -1){
-            const row = this.#database[table][rowIndex]
-            this.#database[table][rowIndex] = {...row,completed_at:true}
+            this.#database[table][rowIndex] = {...this.#database[table][rowIndex],completed_at:new Date()}
             this.#persist()
         }
     }

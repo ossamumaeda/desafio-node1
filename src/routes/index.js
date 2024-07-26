@@ -11,7 +11,6 @@ export const routes = [
         handler: async (req, res) => {
 
             const query = req.query
-            console.log(req.query)
             const search = {
                 ...(query.title && { title: query.title }),
                 ...(query.description && { description: query.description })
@@ -71,18 +70,12 @@ export const routes = [
             const { id } = req.params
             const {
                 title,
-                description,
-                completed_at,
-                created_at,
-                updated_at
+                description
             } = req.body
 
             dataBase.update('tasks', id, {
                 title,
-                description,
-                completed_at,
-                created_at,
-                updated_at
+                description
             })
             return res
                 .writeHead(204)
