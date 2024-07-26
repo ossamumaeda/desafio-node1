@@ -56,6 +56,11 @@ export class Database{
     }
 
     update(table,id,data){
+        if(!(data.title && data.description)){
+            console.log("Campos faltando")
+            return
+        }
+        
         const rowIndex = this.#database[table].findIndex(r => r.id === id)
         if(rowIndex > -1){
             this.#database[table][rowIndex] = {...this.#database[table][rowIndex],...data}
@@ -66,8 +71,16 @@ export class Database{
     patch(table,id){
         const rowIndex = this.#database[table].findIndex(r => r.id === id)
         if(rowIndex > -1){
-            this.#database[table][rowIndex] = {...this.#database[table][rowIndex],completed_at:new Date()}
+            let row = this.#database[table][rowIndex];
+            let completed_at = null
+            if(!row.completed_at){
+                completed_at = new Date()
+            }
+            this.#database[table][rowIndex] = {...row,completed_at}
             this.#persist()
+        }else{
+            console.log("Id não inexistente")
+            return
         }
     }
 
