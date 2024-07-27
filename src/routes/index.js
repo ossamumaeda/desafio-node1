@@ -73,13 +73,15 @@ export const routes = [
                 description
             } = req.body
 
-            dataBase.update('tasks', id, {
+            const patch = dataBase.update('tasks', id, {
                 title,
                 description
             })
+
+            if (patch.error === false) { res.statusCode = 204 }
             return res
-                .writeHead(204)
-                .end()
+                .setHeader('Content-type', 'application/json')
+                .end(JSON.stringify(patch))
         }
     },
     {
@@ -89,10 +91,11 @@ export const routes = [
             console.log("PATCH")
             const { id } = req.params
 
-            dataBase.patch('tasks', id)
+            const patch = dataBase.patch('tasks', id)
+            if (patch.error === false) { res.statusCode = 204 }
             return res
-                .writeHead(204)
-                .end()
+                .setHeader('Content-type', 'application/json')
+                .end(JSON.stringify(patch))
         }
     }
 ]

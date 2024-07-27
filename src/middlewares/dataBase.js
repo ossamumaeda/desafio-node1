@@ -20,10 +20,9 @@ export class Database{
 
     async select(table,search){
         this.#database =  JSON.parse(await fs.readFile(dbPath,'utf-8'));
-        // console.log(this.#database)
         let data = this.#database[table] ?? []
 
-        if(search){
+        if(search && !Object.keys(search).length === 0){
             data = data.filter(row =>{
                 return Object.entries(search).some(([key,value]) =>{
                     return row[key]
@@ -32,6 +31,7 @@ export class Database{
                 })
             })  
         }
+        console.log(data)
         return data
     }
 
@@ -58,14 +58,16 @@ export class Database{
     update(table,id,data){
         if(!(data.title && data.description)){
             console.log("Campos faltando")
-            return
+            return {message: "Campos faltando",error:true}
         }
         
         const rowIndex = this.#database[table].findIndex(r => r.id === id)
         if(rowIndex > -1){
             this.#database[table][rowIndex] = {...this.#database[table][rowIndex],...data}
             this.#persist()
+            return {message:"Registro alterado com sucessos", error: false}
         }
+        return {message: "Id não encontrado",error:true}
     }
 
     patch(table,id){
@@ -78,9 +80,10 @@ export class Database{
             }
             this.#database[table][rowIndex] = {...row,completed_at}
             this.#persist()
+            return {message:"Registro alterado com sucessos", error: false}
         }else{
-            console.log("Id não inexistente")
-            return
+            console.log("Id inexistente")
+            return {message: "Id inexistente",error:true}
         }
     }
 
